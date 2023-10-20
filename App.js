@@ -10,6 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import {fontType, colors} from './assets/theme';
+import { Home, User, More } from 'iconsax-react-native';
 export default function App() {
   return (
     <View style={styles.container}>
@@ -37,6 +38,13 @@ export default function App() {
           </View>
       </View>
       <ListBlog />
+      <View style={Layout.navbar}>
+        <View style={Layout.selectedNavbar}>
+          <Home size="17" color="#FFFFFF"/>
+        </View>
+        <User size="17" color="#FFFFFF"/>
+        <More size="17" color="#FFFFFF"/>
+      </View>
     </View>
   );
 }
@@ -76,34 +84,69 @@ const ListBlog = () => {
           </View>
         </View>
         <Text style={category.header}>Try it!</Text>
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/1.jpg')}
-        />
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/2.jpg')}
-        />
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/3.jpg')}
-        />
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/4.jpg')}
-        />
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/5.jpg')}
-        />
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/6.jpg')}
-        />
-        <Image
-          style={Layout.photo}
-          source={require('./assets/img/7.jpg')}
-        />
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/1.jpg')}
+          />
+          <Text style={Layout.name}>Madden Adams</Text>
+          <Text style={Layout.caption}>Plengkung Beach</Text>
+          <Text style={Layout.date}>October 11, 2023</Text>
+        </View>
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/2.jpg')}
+          />
+          <Text style={Layout.name}>George</Text>
+          <Text style={Layout.caption}>Mentawai Beach</Text>
+          <Text style={Layout.date}>September 7, 2023</Text>
+        </View>
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/3.jpg')}
+          />
+          <Text style={Layout.name}>Chad Harmon</Text>
+          <Text style={Layout.caption}>Tanjung Setia Beach</Text>
+          <Text style={Layout.date}>September 3, 2023</Text>
+        </View>
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/4.jpg')}
+          />
+          <Text style={Layout.name}>Harvey Jones</Text>
+          <Text style={Layout.caption}>Rote Beach</Text>
+          <Text style={Layout.date}>August 31, 2023</Text>
+        </View>
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/5.jpg')}
+          />
+          <Text style={Layout.name}>Stanley Ball</Text>
+          <Text style={Layout.caption}>Nihiwatu Beach</Text>
+          <Text style={Layout.date}>August 13, 2023</Text>
+        </View>
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/6.jpg')}
+          />
+          <Text style={Layout.name}>Daniel Rose</Text>
+          <Text style={Layout.caption}>Nusa Penida Beach</Text>
+          <Text style={Layout.date}>July 28, 2023</Text>
+        </View>
+        <View style={Layout.box}>
+          <Image
+            style={Layout.photo}
+            source={require('./assets/img/7.jpg')}
+          />
+          <Text style={Layout.name}>Ayaan Barnes</Text>
+          <Text style={Layout.caption}>Nusa Lembongan Beach</Text>
+          <Text style={Layout.date}>July 6, 2023</Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -189,7 +232,7 @@ const Layout = StyleSheet.create({
   item: {
     padding: 10,
     marginBottom: 5,
-    borderRadius: 25,
+    borderRadius: 15,
     alignItems: 'center',
     backgroundColor: '#1D60CC',
   },
@@ -202,5 +245,45 @@ const Layout = StyleSheet.create({
     borderTopRightRadius: 30,
     borderBottomLeftRadius: 30,
     marginVertical: 10,
+  },
+  box: {
+    marginBottom: 5,
+    alignItems: 'Left',
+  },
+  name: {
+    color: '#252525',
+    fontSize: 20,
+    fontFamily: fontType['Pjs-Bold'],
+  },
+  caption: {
+    color: '#252525',
+    fontSize: 15,
+    fontFamily: fontType['Pjs-Light'],
+  },
+  date: {
+    color: '#252525',
+    fontSize: 12,
+    fontFamily: fontType['Pjs-ExtraLight'],
+  },
+  navbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#1D60CC',
+    borderRadius: 20,
+    height: 50,
+    width: '50%',
+    position: 'absolute',
+    bottom: 25,
+    alignSelf: 'center',
+  },
+  selectedNavbar: {
+    padding: 2,
+    backgroundColor: '#143b85',
+    width: 35,
+    height: 35,
+    alignItems: 'center',
+    justifyContent:'center',
+    borderRadius: 10,
   },
 });

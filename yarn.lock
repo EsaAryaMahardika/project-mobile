@@ -5537,6 +5537,11 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
+"react-native-drop-shadow@^0.0.9":
+  "integrity" "sha512-XVU/E2yHuYdAsjippzgGMO/kDaPFbx5iSPJrQuN/a5WCPuS2xuRjHFu0wuhpRHGhfMCiZdBFXlKx9QNo65tDXA=="
+  "resolved" "https://registry.npmjs.org/react-native-drop-shadow/-/react-native-drop-shadow-0.0.9.tgz"
+  "version" "0.0.9"
+
 "react-native-svg@^13.14.0", "react-native-svg@>=5.3":
   "integrity" "sha512-27ZnxUkHgWICimhuj6MuqBkISN53lVvgWJB7pIypjXysAyM+nqgQBPh4vXg+7MbqLBoYvR4PiBgKfwwGAqVxHg=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.14.0.tgz"
