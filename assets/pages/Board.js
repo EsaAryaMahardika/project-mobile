@@ -1,8 +1,9 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, View, ScrollView, Image, Text} from 'react-native';
+import {StyleSheet, View, ScrollView, Image, Text, TouchableOpacity} from 'react-native';
 import {DirectLeft} from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
 import {fontType} from '../theme';
 import {BoardData} from '../../content';
 const BoardTemplate = ({item}) => {
@@ -19,6 +20,10 @@ const BoardTemplate = ({item}) => {
     );
 };
 const Board = () => {
+    const navigation = useNavigation();
+    const goMain = () => {
+        navigation.navigate('Main');
+    };
     return (
         <View style={style.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -34,9 +39,9 @@ const Board = () => {
                     );
                 })}
             </ScrollView>
-            <View style={style.header}>
+            <TouchableOpacity style={style.header} onPress={goMain}>
                 <DirectLeft size="20" color="#FFFFFF"/>
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };

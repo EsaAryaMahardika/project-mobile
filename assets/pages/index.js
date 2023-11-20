@@ -1,4 +1,8 @@
 /* eslint-disable prettier/prettier */
 import Board from './Board';
 import Beach from './Beach';
-export {Beach, Board};
+import Tutorial from './Tutorial';
+import Home from './Home';
+import More from './More';
+import Profile from './Profile';
+export {Beach, Board, Tutorial, Home, More, Profile};

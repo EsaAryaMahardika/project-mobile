@@ -3,6 +3,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View, ScrollView, Image, Text, TouchableOpacity} from 'react-native';
 import {DirectLeft, Heart} from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
 import {fontType} from '../theme';
 import {BeachData} from '../../content';
 const BeachTemplate = ({item, onPress, variant}) => {
@@ -23,6 +24,10 @@ const BeachTemplate = ({item, onPress, variant}) => {
 };
 const Beach = () => {
     const [selectedId, setSelectedId] = useState();
+    const navigation = useNavigation();
+    const goMain = () => {
+        navigation.navigate('Main');
+    };
     return (
         <View style={style.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -41,9 +46,9 @@ const Beach = () => {
                     );
                 })}
             </ScrollView>
-            <View style={style.header}>
+            <TouchableOpacity style={style.header} onPress={goMain}>
                 <DirectLeft size="20" color="#FFFFFF"/>
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };

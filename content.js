@@ -134,18 +134,22 @@ export const TutorialData = [
     {
         id: 1,
         title: 'Easy',
+        image: require('./assets/img/Tutorial/Easy.jpg'),
     },
     {
         id: 2,
         title: 'Normal',
+        image: require('./assets/img/Tutorial/Normal.jpeg'),
     },
     {
         id: 3,
         title: 'Hard',
+        image: require('./assets/img/Tutorial/Hard.jpg'),
     },
     {
         id: 4,
         title: 'Professional',
+        image: require('./assets/img/Tutorial/Professional.jpg'),
     },
 ];
 

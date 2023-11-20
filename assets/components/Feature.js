@@ -1,18 +1,18 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {fontType} from '../theme';
 import {FeatureData} from '../../content';
 const FeatureTemplate = ({item}) => {
+  const navigation = useNavigation();
   return (
     <View style={Layout.column}>
-      <View style={Layout.item}>
+      <TouchableOpacity style={Layout.item} onPress={() => navigation.navigate(item.name)}>
         <Image
           style={Layout.shortcut}
           source={item.icon}
         />
-      </View>
+      </TouchableOpacity>
       <Text style={Layout.title}>{item.name}</Text>
     </View>
   );
