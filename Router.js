@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Beach, Board, Tutorial, Home, More, Profile } from './assets/pages';
+import { Beach, Board, Tutorial, Home, More, Profile, Upload } from './assets/pages';
 import Nav from './assets/components/Nav';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,6 +22,7 @@ const Router = () => {
       <Stack.Screen name="Beach" component={Beach} options={{ headerShown: false }} />
       <Stack.Screen name="Board" component={Board} options={{ headerShown: false }} />
       <Stack.Screen name="Tutorial" component={Tutorial} options={{ headerShown: false }} />
+      <Stack.Screen name="Upload" component={Upload} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

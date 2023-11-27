@@ -1,13 +1,19 @@
 import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import { Edit } from "iconsax-react-native";
 import {fontType} from '../theme';
+import { useNavigation } from "@react-navigation/native";
 const More = () => {
+    const navigation = useNavigation();
     return(
         <View style={styles.container}>
             <View style={styles.box}>
                 <Image source={require('../img/Profile/Profile.jpg')} style={styles.image}/>
                 <Text style={styles.title}>Esa Mahardika</Text>
             </View>
+            <TouchableOpacity style={styles.upload} onPress={() => navigation.navigate("Upload")}>
+                <Edit color='#FFFFFF' variant="Linear" size={20} />
+            </TouchableOpacity>
         </View>
     );
 }
@@ -31,5 +37,13 @@ const styles = StyleSheet.create({
         width: '30%',
         height: 100,
         borderRadius: 50,
-    }
+    },
+    upload: {
+        backgroundColor: '#1D60CC',
+        padding: 15,
+        position: 'absolute',
+        bottom: 100,
+        right: 24,
+        borderRadius: 10,
+    },
 });
