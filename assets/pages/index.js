@@ -6,4 +6,5 @@ import Home from './Home';
 import More from './More';
 import Profile from './Profile';
 import Upload from './Upload';
-export {Beach, Board, Tutorial, Home, More, Profile, Upload};
+import Edit from './Edit';
+export {Beach, Board, Tutorial, Home, More, Profile, Upload, Edit};

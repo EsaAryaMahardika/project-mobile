@@ -1,29 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from "react-native";
 import { DirectLeft, GalleryImport } from "iconsax-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { fontType, colors } from "../theme";
 import axios from 'axios';
 
-const Upload = () => {
+const Edit = ({route}) => {
+  const {ID} = route.params;
   const [Post, setPost] = useState({
-    location: "",
     name: "Tes",
     image: "https://www.pole-optitec.com/img/entreprises/default.jpg",
-    postAt: Date(),
+    location: "",
+    postAt: "Tes"
   });
-  const Date = () => {
-    var Now = new Date();
-    var date = Now.getDate();
-    var month = Now.getMonth() + 1;
-    var year = Now.getFullYear();
-    var monthNames = [
-      "January", "February", "March", "April", "May", "June", "July",
-      "August", "September", "October", "November", "December"
-    ];
-    var monthName = monthNames[month];
-    return monthName + ' ' + date + ', ' + year;
-  }
   const handleChange = (key, value) => {
     setPost({
       ...Post,
@@ -31,9 +20,23 @@ const Upload = () => {
     });
   };
   const navigation = useNavigation();
-  const Upload = async () => {
+  useEffect(() => {
+    getID();
+  }, [ID]);
+  const getID = async () => {
+    const response = await axios.get(
+        `https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf/${ID}`,
+    );
+    setPost({
+        name : response.data.name,
+        image : response.data.image,
+        location : response.data.location,
+        postAt : response.data.postAt
+    })
+  };
+  const Update = async () => {
     await axios
-    .post(`https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf`, {
+    .put(`https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf/${ID}`, {
         name: Post.name,
         image: Post.image,
         location: Post.location,
@@ -55,11 +58,11 @@ const Upload = () => {
           gap: 10,
         }}
       >
-        <View style={styles.borderDashed}>
+        <View style={styles.border}>
           <TextInput
             placeholder="Location"
             value={Post.location}
-            onChangeText={(text) => handleChange("location", text)}
+            onChangeText={text => handleChange("location", text)}
             placeholderTextColor={colors.blue(0.6)}
             multiline
             style={styles.title}
@@ -70,14 +73,14 @@ const Upload = () => {
             <Text style={styles.label}>Add Your Photo Here</Text>
         </View>
       </ScrollView>
-        <TouchableOpacity style={styles.button} onPress={Upload}>
-            <Text style={styles.buttonLabel}>Upload</Text>
+        <TouchableOpacity style={styles.button} onPress={Update}>
+            <Text style={styles.buttonLabel}>Edit</Text>
         </TouchableOpacity>
     </View>
   );
 };
 
-export default Upload;
+export default Edit;
 
 const styles = StyleSheet.create({
   container: {
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     fontFamily: fontType["Pjs-ExtraLight"],
     color: '#1D60CC',
   },
-  borderDashed: {
+  border: {
     borderStyle: "dashed",
     borderWidth: 1,
     borderRadius: 5,
