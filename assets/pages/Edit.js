@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from "react-native";
-import { DirectLeft, GalleryImport } from "iconsax-react-native";
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image} from "react-native";
+import { DirectLeft, GalleryImport, Add } from "iconsax-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { fontType, colors } from "../theme";
-import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const Edit = ({route}) => {
   const {ID} = route.params;
   const [Post, setPost] = useState({
-    name: "Tes",
-    image: "https://www.pole-optitec.com/img/entreprises/default.jpg",
+    name: "",
+    image: "",
     location: "",
-    postAt: "Tes"
+    PostAt: ""
   });
   const handleChange = (key, value) => {
     setPost({
@@ -20,28 +22,50 @@ const Edit = ({route}) => {
     });
   };
   const navigation = useNavigation();
+  const [image, setImage] = useState(null);
+  const [PrevImg, setPrevImg] = useState(null);
   useEffect(() => {
-    getID();
+    const subscriber = firestore()
+      .collection('post')
+      .doc(ID)
+      .onSnapshot(documentSnapshot => {
+        const Post = documentSnapshot.data();
+        setPost({
+          name: Post.name,
+          image: Post.image,
+          location: Post.location,
+          PostAt: Post.PostAt,
+        });
+        setPrevImg(Post.image);
+        setImage(Post.image);
+      });
+    return () => subscriber();
   }, [ID]);
-  const getID = async () => {
-    const response = await axios.get(
-        `https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf/${ID}`,
-    );
-    setPost({
-        name : response.data.name,
-        image : response.data.image,
-        location : response.data.location,
-        postAt : response.data.postAt
-    })
+  const UploadImg = async () => {
+    ImagePicker.openPicker()
+      .then(image => {
+        setImage(image.path);
+      })
   };
   const Update = async () => {
-    await axios
-    .put(`https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf/${ID}`, {
-        name: Post.name,
-        image: Post.image,
-        location: Post.location,
-        postAt: Post.postAt,
-    })
+    let filename = image.substring(image.lastIndexOf('/') + 1);
+    const extension = filename.split('.').pop();
+    filename = Date.now() + '.' + extension;
+    const reference = storage().ref(`blogimages/${filename}`);
+    if (image !== PrevImg && PrevImg) {
+      const PrevImage = storage().refFromURL(PrevImg);
+      await PrevImage.delete();
+    }
+    if (image !== PrevImg) {
+      await reference.putFile(image);
+    }
+    const url = image !== PrevImg ? await reference.getDownloadURL() : PrevImg;
+    await firestore().collection('post').doc(ID).update({
+      name: Post.name,
+      image: url,
+      location: Post.location,
+      PostAt: Post.PostAt,
+    });
     navigation.navigate('Home');
   };
   return (
@@ -68,14 +92,38 @@ const Edit = ({route}) => {
             style={styles.title}
           />
         </View>
-        <View style={styles.imageUpload}>
-            <GalleryImport size="32" color="#1D60CC"/>
-            <Text style={styles.label}>Add Your Photo Here</Text>
-        </View>
+        {image ? (
+          <View style={{position: 'relative'}}>
+            <Image
+              style={{width: '100%', height: 150}}
+              source={{
+                uri: image,
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -5,
+                right: -5,
+                backgroundColor: '#1D60CC',
+                borderRadius: 25,
+              }}
+              onPress={() => setImage(null)}>
+              <Add size='20' variant='Linear' color='#FFFFFF' style={{transform: [{rotate: '45deg'}]}}/>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={UploadImg}>
+            <View style={styles.imageUpload}>
+              <GalleryImport size="32" color="#1D60CC"/>
+              <Text style={styles.label}>Add Your Photo Here</Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </ScrollView>
-        <TouchableOpacity style={styles.button} onPress={Update}>
-            <Text style={styles.buttonLabel}>Edit</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={Update}>
+        <Text style={styles.buttonLabel}>Edit</Text>
+      </TouchableOpacity>
     </View>
   );
 };

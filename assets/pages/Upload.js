@@ -1,21 +1,22 @@
 import React, { useState } from "react";
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView} from "react-native";
-import { DirectLeft, GalleryImport } from "iconsax-react-native";
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image} from "react-native";
+import { DirectLeft, GalleryImport, Add } from "iconsax-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { fontType, colors } from "../theme";
-import axios from 'axios';
-
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 const Upload = () => {
   const [Post, setPost] = useState({
     location: "",
-    name: "Tes",
-    image: "https://www.pole-optitec.com/img/entreprises/default.jpg",
-    postAt: Date(),
+    name: "Esa Arya Mahardika",
+    image: "",
+    PostAt: "",
   });
-  const Date = () => {
+  const Tanggal = () => {
     var Now = new Date();
     var date = Now.getDate();
-    var month = Now.getMonth() + 1;
+    var month = Now.getMonth();
     var year = Now.getFullYear();
     var monthNames = [
       "January", "February", "March", "April", "May", "June", "July",
@@ -31,15 +32,30 @@ const Upload = () => {
     });
   };
   const navigation = useNavigation();
-  const Upload = async () => {
-    await axios
-    .post(`https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf`, {
-        name: Post.name,
-        image: Post.image,
-        location: Post.location,
-        postAt: Post.postAt,
-    })
+  const [image, setImage] = useState(null);
+  const UploadPost = async () => {
+    let filename = image.substring(image.lastIndexOf('/') + 1);
+    const extension = filename.split('.').pop();
+    const reference = storage().ref(`img/${filename+'.'+extension}`);
+    await reference.putFile(image);
+    const url = await reference.getDownloadURL();
+    await firestore().collection('post').add({
+      location: Post.location,
+      name: Post.name,
+      image: url,
+      PostAt: Tanggal(),
+    });
     navigation.navigate('Home');
+  };
+  const Uploadimg = async () => {
+    ImagePicker.openPicker({
+      width: 1920,
+      height: 1080,
+      cropping: true,
+    })
+      .then(image => {
+        setImage(image.path);
+      });
   };
   return (
     <View style={styles.container}>
@@ -65,12 +81,34 @@ const Upload = () => {
             style={styles.title}
           />
         </View>
-        <View style={styles.imageUpload}>
+        {image ? (
+          <View style={{position: 'relative'}}>
+            <Image
+              style={{width: '100%', height: 150, borderRadius: 5}}
+              source={{uri: image,}}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -5,
+                right: -5,
+                backgroundColor: colors.blue(),
+                borderRadius: 25,
+              }}
+              onPress={() => setImage(null)}>
+              <Add size='20' variant='Linear' color='#FFFFFF' style={{transform: [{rotate: '45deg'}]}}/>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={Uploadimg}>
+          <View style={styles.imageUpload}>
             <GalleryImport size="32" color="#1D60CC"/>
             <Text style={styles.label}>Add Your Photo Here</Text>
-        </View>
+          </View>
+        </TouchableOpacity>
+        )}
       </ScrollView>
-        <TouchableOpacity style={styles.button} onPress={Upload}>
+        <TouchableOpacity style={styles.button} onPress={UploadPost}>
             <Text style={styles.buttonLabel}>Upload</Text>
         </TouchableOpacity>
     </View>

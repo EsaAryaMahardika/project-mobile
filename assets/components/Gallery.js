@@ -1,14 +1,14 @@
-/* eslint-disable prettier/prettier */
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, RefreshControl} from 'react-native';
 import { MoreSquare } from "iconsax-react-native";
 import {fontType} from '../theme';
-import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Feature from './Feature';
-import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
 const GalleryTemplate = ({item}) => {
   const [isOverflowed, setIsOverflowed] = useState(false);
   const navigation = useNavigation();
+  const [thisPost, setthisPost] = useState(null);
   const toggleOverflow = () => {
     setIsOverflowed(!isOverflowed);
   };
@@ -16,7 +16,16 @@ const GalleryTemplate = ({item}) => {
     navigation.navigate('Edit', {ID:item.id})
   }
   const Delete = async () => {
-   await axios.delete(`https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf/${item.id}`)
+    await firestore()
+      .collection('post')
+      .doc(item.id)
+      .delete()
+    if (thisPost?.image) {
+      const image = storage().refFromURL(thisPost?.image);
+      await image.delete();
+    }
+    setthisPost(null);
+    navigation.navigate('Home');
   }
   return (
     <View style={Layout.box}>
@@ -25,7 +34,7 @@ const GalleryTemplate = ({item}) => {
         <View>
           <Text style={Layout.name}>{item.name}</Text>
           <Text style={Layout.caption}>{item.location}</Text>
-          <Text style={Layout.date}>{item.postAt}</Text>
+          <Text style={Layout.date}>{item.PostAt}</Text>
         </View>
         <View style={Layout.more}>
           <TouchableOpacity onPress={toggleOverflow}>
@@ -51,24 +60,39 @@ const GalleryTemplate = ({item}) => {
 const Gallery = () => {
   const [Post, setPost] = useState([]);
   const [fresh, setfresh] = useState(false);
-  const getPost = async () => {
-      const response = await axios.get(
-        'https://65641b4cceac41c0761d6c5b.mockapi.io/wocoapp/surf',
-      );
-      setPost(response.data);
-  };
   const onfresh = useCallback(() => {
     setfresh(true);
     setTimeout(() => {
-      getPost()
+      firestore()
+        .collection('post')
+        .onSnapshot(querySnapshot => {
+          const posts = [];
+          querySnapshot.forEach(documentSnapshot => {
+            posts.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setPost(posts);
+        });
       setfresh(false);
     }, 1500);
   }, []);
-  useFocusEffect(
-    useCallback(() => {
-      getPost();
-    }, [])
-  );
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('post')
+      .onSnapshot(querySnapshot => {
+        const Posts = [];
+        querySnapshot.forEach(documentSnapshot => {
+          Posts.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setPost(Posts);
+      });
+    return () => subscriber();
+  }, []);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
